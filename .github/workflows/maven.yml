@@ -22,5 +22,55 @@ jobs:
         java-version: '17'
         distribution: 'adopt'
         cache: maven
+
+    ## create maven settings xml
+    - name: Create maven settings.xml
+      uses: whelk-io/maven-settings-xml-action@v22
+      with:
+        mirrors: >
+          [
+            {
+              "id": "nexus",
+              "mirrorOf": "*,!nexus",
+              "url": "${{ env.NEXUS_URL }}"
+            }
+          ]
+        repositories: >
+          [
+            {
+              "id": "maven-group",
+              "url": "${{ env.NEXUS_URL }}",
+              "releases": {
+                "enabled": "true"
+              },
+              "snapshots": {
+                "enabled": "false"
+              }
+            }
+          ]
+        plugin_repositories: >
+          [
+            {
+              "id": "maven-group",
+              "url": "${{ vars.NEXUS_URL }}",
+              "releases": {
+                "enabled": "true"
+              },
+              "snapshots": {
+                "enabled": "false"
+              }
+            }
+          ]
+        servers: >
+          [
+            { 
+              "id": "nexus", 
+              "username": "${{ secrets.MAVEN_USERNAME }}", 
+              "password": "${{ secrets.MAVEN_PASSWORD }}" 
+            }
+          ]
+    - name: read settings.xml
+      run: cat ~/.m2/settings.xml
+
     - name: Build with Maven
       run: mvn -B verify --file pom.xml
