@@ -52,7 +52,7 @@ jobs:
           [
             {
               "id": "maven-group",
-              "url": "${{ env.NEXUS_URL }}",
+              "url": "${{ vars.NEXUS_URL }}",
               "releases": {
                 "enabled": "true"
               },
